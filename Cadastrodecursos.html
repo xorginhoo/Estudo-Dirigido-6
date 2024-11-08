@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de cursos</title>
+</head>
+
+<body>
+
+    <h1>Cadastro de cursos</h1>
+
+    <p>Nome do curso:</p>
+    <input id="nomeCurso" type="text">
+
+    <p>Duração em anos:</p>
+    <input id="duracaoCurso" type="text">
+
+    <p>Coordenador do curso:</p>
+    <input id="coordenadorCurso" type="text">
+    <p></p>
+    <button onclick="cadastrarCurso()">Cadastrar curso</button>
+
+
+    <h1>Cursos Cadastrados</h1>
+    <ul id="listaCursos"></ul>
+
+    <style>
+        * {
+            margin: 5px 0;
+            padding: 2px;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: sans-serif;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+
+            margin: 10px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            margin-top: 10px;
+        }
+
+        .curso-nome {
+            font-weight: bold;
+        }
+    </style>
+
+    <script>
+        function atualizarListaCursos() {
+            const listaCursos = document.getElementById("listaCursos");
+            listaCursos.innerHTML = "";
+
+            const cursos = JSON.parse(localStorage.getItem("cursos")) || [];
+            cursos.forEach((curso, index) => {
+                const li = document.createElement("li");
+                li.innerHTML = `
+                    <span class="curso-nome">${curso.nome}</span> <br> <br>
+                    Duração: ${curso.duracao} anos <br><br>
+                    Coordenador: ${curso.coordenador} <br> <br>
+                    <button onclick="excluirCurso(${index})">Excluir</button>
+                `;
+                listaCursos.appendChild(li);
+            });
+        }
+
+        function cadastrarCurso() {
+            const nomeCurso = document.getElementById("nomeCurso").value;
+            const duracaoCurso = document.getElementById("duracaoCurso").value;
+            const coordenadorCurso = document.getElementById("coordenadorCurso").value;
+
+            if (!nomeCurso || !duracaoCurso || !coordenadorCurso) {
+                alert("Preencha todos os campos!");
+                return;
+            }
+
+            const cursos = JSON.parse(localStorage.getItem("cursos")) || [];
+            cursos.push({ nome: nomeCurso, duracao: duracaoCurso, coordenador: coordenadorCurso });
+            localStorage.setItem("cursos", JSON.stringify(cursos));
+            atualizarListaCursos();
+
+            document.getElementById("nomeCurso").value = "";
+            document.getElementById("duracaoCurso").value = "";
+            document.getElementById("coordenadorCurso").value = "";
+        }
+
+        function excluirCurso(index) {
+            const cursos = JSON.parse(localStorage.getItem("cursos")) || [];
+            cursos.splice(index, 1);
+            localStorage.setItem("cursos", JSON.stringify(cursos));
+            atualizarListaCursos();
+        }
+
+        window.onload = atualizarListaCursos;
+    </script>
+
+</body>
+
+</html>
